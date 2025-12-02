@@ -1,63 +1,108 @@
+use std::sync::{Arc, Mutex};
+use std::thread;
+
 pub fn part1(input: &str) -> String {
-    let mut total = 0;
+    let total = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
     for range in input.split(",") {
-        let (bottom, top) = match range.split_once("-") {
-            Some((left, right)) => (left.trim(), right.trim()),
-            None => {
-                panic!("Error spliting range {}", range)
+        let counter = Arc::clone(&total);
+        let current_range = String::from(range);
+        let handle = thread::spawn(move || {
+            let (bottom, top) = match current_range.split_once("-") {
+                Some((left, right)) => (left.trim(), right.trim()),
+                None => {
+                    panic!("Error spliting range {}", current_range)
+                }
+            };
+
+            let convert_lower = bottom.parse::<u64>();
+            let convert_upper = top.parse::<u64>();
+
+            let lower = match convert_lower {
+                Ok(int) => int,
+                Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
+            };
+            let upper = match convert_upper {
+                Ok(int) => int,
+                Err(error) => panic!("Problem converting {} to int {:?}", top, error),
+            };
+
+            for i in lower..=upper {
+                if is_invalid_pt1(&i.to_string()) {
+                    let num_result = counter.lock();
+                    match num_result {
+                        Ok(mut num) => *num += i,
+                        Err(_error) => panic!("Could not get lock on counter"),
+                    }
+                }
             }
-        };
-
-        let convert_lower = bottom.parse::<u64>();
-        let convert_upper = top.parse::<u64>();
-
-        let lower = match convert_lower {
-            Ok(int) => int,
-            Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
-        };
-        let upper = match convert_upper {
-            Ok(int) => int,
-            Err(error) => panic!("Problem converting {} to int {:?}", top, error),
-        };
-
-        for i in lower..=upper {
-            if is_invalid_pt1(&i.to_string()) {
-                total += i;
-            }
+        });
+        handles.push(handle);
+    }
+    for handle in handles {
+        let join_res = handle.join();
+        match join_res {
+            Ok(()) => {}
+            Err(_error) => panic!("Error joining handle"),
         }
     }
-    total.to_string()
+    let total_res = total.lock();
+    match total_res {
+        Ok(res) => res.to_string(),
+        Err(_error) => panic!("Unable to get lock on total"),
+    }
 }
 
 pub fn part2(input: &str) -> String {
-    let mut total = 0;
+    let total = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
     for range in input.split(",") {
-        let (bottom, top) = match range.split_once("-") {
-            Some((left, right)) => (left.trim(), right.trim()),
-            None => {
-                panic!("Error spliting range {}", range)
+        let counter = Arc::clone(&total);
+        let current_range = String::from(range);
+        let handle = thread::spawn(move || {
+            let (bottom, top) = match current_range.split_once("-") {
+                Some((left, right)) => (left.trim(), right.trim()),
+                None => {
+                    panic!("Error spliting range {}", current_range)
+                }
+            };
+
+            let convert_lower = bottom.parse::<u64>();
+            let convert_upper = top.parse::<u64>();
+
+            let lower = match convert_lower {
+                Ok(int) => int,
+                Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
+            };
+            let upper = match convert_upper {
+                Ok(int) => int,
+                Err(error) => panic!("Problem converting {} to int {:?}", top, error),
+            };
+
+            for i in lower..=upper {
+                if is_invalid_pt2(&i.to_string()) {
+                    let num_result = counter.lock();
+                    match num_result {
+                        Ok(mut num) => *num += i,
+                        Err(_error) => panic!("Could not get lock on counter"),
+                    }
+                }
             }
-        };
-
-        let convert_lower = bottom.parse::<u64>();
-        let convert_upper = top.parse::<u64>();
-
-        let lower = match convert_lower {
-            Ok(int) => int,
-            Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
-        };
-        let upper = match convert_upper {
-            Ok(int) => int,
-            Err(error) => panic!("Problem converting {} to int {:?}", top, error),
-        };
-
-        for i in lower..=upper {
-            if is_invalid_pt2(&i.to_string()) {
-                total += i;
-            }
+        });
+        handles.push(handle);
+    }
+    for handle in handles {
+        let join_res = handle.join();
+        match join_res {
+            Ok(()) => {}
+            Err(_error) => panic!("Error joining handle"),
         }
     }
-    total.to_string()
+    let total_res = total.lock();
+    match total_res {
+        Ok(res) => res.to_string(),
+        Err(_error) => panic!("Unable to get lock on total"),
+    }
 }
 
 fn is_invalid_pt1(num: &str) -> bool {
