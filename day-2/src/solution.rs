@@ -13,11 +13,11 @@ pub fn part1(input: &str) -> String {
 
         let lower = match convert_lower {
             Ok(int) => int,
-            Err(error) => panic!(r"Problem converting {} to int {:?}", bottom, error),
+            Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
         };
         let upper = match convert_upper {
             Ok(int) => int,
-            Err(error) => panic!(r"Problem converting {} to int {:?}", top, error),
+            Err(error) => panic!("Problem converting {} to int {:?}", top, error),
         };
 
         for i in lower..=upper {
@@ -44,11 +44,11 @@ pub fn part2(input: &str) -> String {
 
         let lower = match convert_lower {
             Ok(int) => int,
-            Err(error) => panic!(r"Problem converting {} to int {:?}", bottom, error),
+            Err(error) => panic!("Problem converting {} to int {:?}", bottom, error),
         };
         let upper = match convert_upper {
             Ok(int) => int,
-            Err(error) => panic!(r"Problem converting {} to int {:?}", top, error),
+            Err(error) => panic!("Problem converting {} to int {:?}", top, error),
         };
 
         for i in lower..=upper {
@@ -75,19 +75,15 @@ fn is_invalid_pt2(num: &str) -> bool {
         if !length.is_multiple_of(i) {
             continue;
         }
-        let mut matches = true;
         let split = length / i;
 
         for j in 1..=(i - 1) {
-            matches = num[split * (j - 1)..split * (j)] == num[split * j..split * (j + 1)];
-            if !matches {
+            if num[split * (j - 1)..split * (j)] != num[split * j..split * (j + 1)] {
                 continue 'outer;
             }
         }
 
-        if matches {
-            return true;
-        }
+        return true;
     }
 
     false
