@@ -115,6 +115,10 @@ fn is_invalid_pt1(num: &str) -> bool {
     num[..upper] == num[upper..]
 }
 fn is_invalid_pt2(num: &str) -> bool {
+    // format!("{}{}", &num[1..], &num[..num.len() - 1]).contains(num)
+
+    // the following code is faster than the above, possibly as it's able to break out of invalid
+    // cases a bit earlier than the algorithm contains uses
     let length = num.len();
     'outer: for i in 2..=length {
         if !length.is_multiple_of(i) {
