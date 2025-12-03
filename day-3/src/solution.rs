@@ -19,11 +19,17 @@ fn get_joltage_pt1(batteries: &str) -> u64 {
             max1 = battery;
             max1_index = index;
         }
+        if battery == '9' {
+            break;
+        }
     }
 
     for battery in batteries[(max1_index + 1)..].chars() {
         if battery > max2 {
             max2 = battery;
+        }
+        if battery == '9' {
+            break;
         }
     }
 
@@ -51,6 +57,9 @@ fn get_joltage_pt2(batteries: &str, battery_count: usize) -> u64 {
     let mut previous_index = 0;
     let mut digits = vec!['0'; battery_count];
 
+    // search a sliding window, starting with either the first character or the last selected, up
+    // to the last character we can pick while still having enough digits left for a battery_count digit
+    // number
     (0..battery_count).for_each(|i| {
         let range = length - battery_count + i;
 
@@ -61,6 +70,11 @@ fn get_joltage_pt2(batteries: &str, battery_count: usize) -> u64 {
             if bat > battery {
                 battery = bat;
                 previous_index = previous + index + 1;
+            }
+            // minor optimisation, if we have a 9 we know we can stop looking as can't be any
+            // larger
+            if bat == '9' {
+                break;
             }
         }
 
@@ -119,6 +133,16 @@ mod tests {
                 input: "811111111111119",
                 count: 12,
                 expected: 811111111119,
+            },
+            TestCase {
+                input: "234234234234278",
+                count: 12,
+                expected: 434234234278,
+            },
+            TestCase {
+                input: "818181911112111",
+                count: 12,
+                expected: 888911112111,
             },
         ];
 
