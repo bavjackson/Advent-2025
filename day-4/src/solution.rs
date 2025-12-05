@@ -1,5 +1,3 @@
-use std::ops::Add;
-
 type Grid = Vec<Vec<char>>;
 
 #[derive(Debug)]
@@ -8,21 +6,6 @@ struct Coord {
     y: i32,
 }
 
-impl Add for Coord {
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self {
-        Self {
-            x: self.x + other.x,
-            y: self.y + other.y,
-        }
-    }
-}
-
-// const UP: Coord = Coord { x: 0, y: -1 };
-// const DOWN: Coord = Coord { x: 0, y: 1 };
-// const LEFT: Coord = Coord { x: -1, y: 0 };
-// const RIGHT: Coord = Coord { x: 1, y: 0 };
 static DIRECTIONS: &[Coord] = &[
     Coord { x: 0, y: -1 },
     Coord { x: -1, y: -1 },
