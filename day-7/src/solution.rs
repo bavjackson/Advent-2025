@@ -34,7 +34,7 @@ pub fn part1(input: &str) -> String {
 pub fn part2(input: &str) -> String {
     let (grid, start) = input_to_grid(input);
 
-    let mut cache: HashMap<String, u64> = HashMap::new();
+    let mut cache: HashMap<Coord, u64> = HashMap::new();
 
     let total = get_timelines(&grid, start, &mut cache);
 
@@ -68,10 +68,9 @@ fn get_splits_for_line(gridline: &GridLine, coords: Coords) -> (u32, Coords) {
     (split_count, split_set.iter().cloned().collect())
 }
 
-fn get_timelines(grid: &Grid, coord: Coord, cache: &mut HashMap<String, u64>) -> u64 {
-    let key = format!("{},{}", coord.x, coord.y);
-    if cache.contains_key(&key) {
-        return *cache.get(&key).unwrap();
+fn get_timelines(grid: &Grid, coord: Coord, cache: &mut HashMap<Coord, u64>) -> u64 {
+    if cache.contains_key(&coord) {
+        return *cache.get(&coord).unwrap();
     }
     if coord.y >= grid.len() {
         return 1;
@@ -86,7 +85,7 @@ fn get_timelines(grid: &Grid, coord: Coord, cache: &mut HashMap<String, u64>) ->
             grid,
             Coord {
                 x: coord.x - 1,
-                y: coord.y + 1,
+                y: coord.y + 2,
             },
             cache,
         );
@@ -94,7 +93,7 @@ fn get_timelines(grid: &Grid, coord: Coord, cache: &mut HashMap<String, u64>) ->
             grid,
             Coord {
                 x: coord.x + 1,
-                y: coord.y + 1,
+                y: coord.y + 2,
             },
             cache,
         );
@@ -103,13 +102,13 @@ fn get_timelines(grid: &Grid, coord: Coord, cache: &mut HashMap<String, u64>) ->
             grid,
             Coord {
                 x: coord.x,
-                y: coord.y + 1,
+                y: coord.y + 2,
             },
             cache,
         )
     }
 
-    cache.insert(key, total);
+    cache.insert(coord, total);
     total
 }
 
