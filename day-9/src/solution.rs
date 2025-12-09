@@ -81,16 +81,10 @@ pub fn part2(input: &str) -> String {
                 let (x1, y1) = (min(l.0.x, l.1.x), min(l.0.y, l.1.y));
                 let (x2, y2) = (max(l.0.x, l.1.x), max(l.0.y, l.1.y));
 
-                let cond = ((x1 == x2)
+                ((x1 == x2)
                     && (x1 > mins.x && x1 < maxes.x && !((y2 <= mins.y) || (y1 >= maxes.y))))
                     || ((y1 == y2)
-                        && (y1 > mins.y && y1 < maxes.y && !((x2 <= mins.x) || (x1 >= maxes.x))));
-
-                if cond {
-                    println!("skipping square {:?},{:?} due to line {:?}", mins, maxes, l);
-                }
-
-                cond
+                        && (y1 > mins.y && y1 < maxes.y && !((x2 <= mins.x) || (x1 >= maxes.x))))
             }) {
                 continue;
             }
@@ -98,7 +92,6 @@ pub fn part2(input: &str) -> String {
             let area = coord_1.area_between(coord_2);
             if area > max_area {
                 max_area = area;
-                println!("area of {} for coords {:?}, {:?}", area, coord_1, coord_2);
             }
         }
     }
@@ -132,4 +125,3 @@ mod tests {
         // panic!("fail to see print output");
     }
 }
-
