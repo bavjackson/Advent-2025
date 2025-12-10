@@ -122,6 +122,6 @@ mod tests {
     fn part_2() {
         let res = part2(EXAMPLE_INPUT);
         assert_eq!(res, "24");
-        // panic!("fail to see print output");
     }
 }
+
