@@ -130,23 +130,18 @@ pub fn part2(coords: &Vec<Coord3D>) -> String {
             }
         }
 
-        if c1_network.is_some() && c2_network.is_some() {
-            if let (Some((_, c1)), Some((id2, c2))) = (c1_network, c2_network) {
+        match (c1_network, c2_network) {
+            (None, None) => networks.push(HashSet::from([dist.c1, dist.c2])),
+            (Some((_, c1)), Some((id2, c2))) => {
                 c1.extend(c2.iter());
                 networks.remove(id2);
             }
-        } else if c1_network.is_some() && c2_network.is_none() {
-            if let Some((_, n)) = c1_network {
-                n.insert(dist.c2);
+            (Some((_, c1)), None) => {
+                c1.insert(dist.c2);
             }
-        } else if c1_network.is_none() && c2_network.is_some() {
-            if let Some((_, n)) = c2_network {
-                n.insert(dist.c1);
+            (None, Some((_, c2))) => {
+                c2.insert(dist.c1);
             }
-        } else if c1_network.is_none() && c2_network.is_none() {
-            networks.push(HashSet::from([dist.c1, dist.c2]));
-        } else {
-            println!("not sure what happened here");
         }
 
         if networks[0].len() == coords.len() {
